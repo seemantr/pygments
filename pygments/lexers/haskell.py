@@ -9,6 +9,7 @@
     :license: BSD, see LICENSE for details.
 """
 
+import copy
 import re
 
 from pygments.lexer import Lexer, RegexLexer, bygroups, do_insertions, \
@@ -17,7 +18,7 @@ from pygments.token import Text, Comment, Operator, Keyword, Name, String, \
     Number, Punctuation, Generic
 from pygments import unistring as uni
 
-__all__ = ['HaskellLexer', 'IdrisLexer', 'AgdaLexer', 'CryptolLexer',
+__all__ = ['HaskellLexer', 'HspecLexer', 'IdrisLexer', 'AgdaLexer', 'CryptolLexer',
            'LiterateHaskellLexer', 'LiterateIdrisLexer', 'LiterateAgdaLexer',
            'LiterateCryptolLexer', 'KokaLexer']
 
@@ -152,6 +153,23 @@ class HaskellLexer(RegexLexer):
             (r'\s+\\', String.Escape, '#pop'),
         ],
     }
+
+
+class HspecLexer(RegexLexer):
+    """
+    TODO
+
+    .. versionadded:: 2.3.0
+    """
+    name = 'Hspec'
+    aliases = ['hspec']
+    filenames = []
+    mimetypes = []
+
+    tokens = copy.deepcopy(HaskellLexer.tokens)
+    tokens['root'].insert(0, (r'(it\s*)("[^"]*")',       bygroups(Text, String.Doc)))
+    tokens['root'].insert(0, (r'(describe\s*)("[^"]*")', bygroups(Text, String.Doc)))
+    tokens['root'].insert(0, (r'(context\s*)("[^"]*")', bygroups(Text, String.Doc)))
 
 
 class IdrisLexer(RegexLexer):
